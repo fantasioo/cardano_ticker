@@ -1,0 +1,7 @@
+{
+  "theme": "Light",
+  "exchangeService": "Bittrex",
+  "updateDelay": "30",
+  "chart": "true",
+  "pair": "ADA-BTC"
+}
