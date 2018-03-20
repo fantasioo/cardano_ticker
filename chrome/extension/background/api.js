@@ -22,11 +22,16 @@ function bittrexTicker(market) {
     }
   })
     .then(res => res.json())
-    .then(json => json.result.Ask)
+    .then(json => {
+      if (json.result.Ask > 1) {
+        // bittrexTicker api give weird result sometime so we redo the call
+        return bittrexTicker(market)
+      }
+      return json.result.Ask
+    })
 }
 
 function upbitTicker(market) {
-  console.log(market)
   return fetch(`https://crix-api-endpoint.upbit.com/v1/crix/trades/ticks?code=CRIX.UPBIT.${market}`)
     .then(res => res.json())
     .then(json => json[0].tradePrice)
@@ -45,6 +50,6 @@ const pointerFunction = {
   HitBTC: hitbtcTicker
 }
 
-export default function getTicker(exchange, market) {
+export default function getApi(exchange, market) {
   return pointerFunction[exchange](market)
 }

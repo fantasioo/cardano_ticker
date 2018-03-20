@@ -1,25 +1,45 @@
 import config from './config.json'
-import getTicker from './background/api'
+import getApi from './background/api'
 import badge from './background/badge'
 
 chrome.runtime.onInstalled.addListener(details => {
   chrome.storage.local.set({ state: JSON.stringify(config) })
 })
 
+let intervalId = null
+let prev = null
 
-const intervalId = setInterval(ticker, 2000)
-
-function ticker() {
+function launchTicker() {
   chrome.storage.local.get('state', obj => {
-    console.log(obj)
     const { state } = obj;
-    const { exchangeService, pair } = JSON.parse(state);
-    getTicker(exchangeService, pair)
-    .then(rate => {
-      console.log(rate)
-      badge(pair, rate, true)
-    })
-    .catch(console.log)
+    const { exchangeService, pair, updateDelay } = JSON.parse(state);
+    prev = 0
+    intervalId = setInterval(ticker, updateDelay * 1000, exchangeService, pair)
+    ticker(exchangeService, pair)
   })
 }
 
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.message === 'reload') {
+    clearInterval(intervalId)
+    launchTicker()
+  }
+})
+
+function ticker(exchangeService, pair) {
+  getApi(exchangeService, pair)
+    .then(rate => {
+      const message = {
+        message: 'update',
+        exchangeService,
+        pair,
+        rate
+      }
+      chrome.runtime.sendMessage(message)
+      badge(pair, rate, prev <= rate)
+      prev = rate
+    })
+    .catch(console.error)
+}
+
+launchTicker()
