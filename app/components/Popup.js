@@ -4,6 +4,7 @@ import TradingViewWidget from 'react-tradingview-widget';
 class Popup extends Component {
   constructor(props) {
     super(props)
+
     this.state = {exchangeService: 'exchange', pair: 'ADA-BTC', rate: 0}
 
     this.handleClose = this.handleClose.bind(this)
@@ -17,6 +18,7 @@ class Popup extends Component {
         this.setState({exchangeService, pair, rate})
       }
     })
+    chrome.runtime.sendMessage({message: 'reload'})
   }
 
   handleClose() {
