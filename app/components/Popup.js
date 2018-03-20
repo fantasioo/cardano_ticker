@@ -30,7 +30,7 @@ class Popup extends Component {
     const {exchangeService, pair, rate} = this.state
 
     return (
-      <div>
+      <div style={state.chart ? {} : {width: '500px'}}>
         <div style={{padding: '5px'}} className="field is-grouped is-grouped-multiline">
           <div className="control is-marginless">
             <div style={{paddingRight: '15px'}} className="tags has-addons">

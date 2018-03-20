@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 
 import Popup from '../components/Popup'
 
-export default class Options extends Component {
+export default class PopupContainer extends Component {
   static propTypes = {
     state: PropTypes.object.isRequired
   };
