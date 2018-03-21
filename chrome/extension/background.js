@@ -11,8 +11,12 @@ let prev = null
 
 function launchTicker() {
   chrome.storage.local.get('state', obj => {
-    const { state } = obj;
-    const { exchangeService, pair, updateDelay } = JSON.parse(state);
+    // prevent error if default config is not set yet
+    if (obj.state === undefined) {
+      return setTimeout(launchTicker, 100)
+    }
+
+    const { exchangeService, pair, updateDelay } = JSON.parse(obj.state);
     prev = 0
     intervalId = setInterval(ticker, updateDelay * 1000, exchangeService, pair)
     ticker(exchangeService, pair)

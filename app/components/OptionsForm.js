@@ -71,7 +71,6 @@ class OptionsForm extends Component {
   handleSubmit(event) {
     event.preventDefault()
     saveState(this.state)
-    console.log(this.state)
   }
 
   render() {
